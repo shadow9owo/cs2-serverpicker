@@ -15,7 +15,7 @@ namespace ServerPicker
 {
     public partial class Form1 : Form
     {
-        private SDRClient sdrclient;
+        private SDRClient sdrclient = new SDRClient();
         private FireWallHelper firewall = new FireWallHelper();
         private List<Pop> popList = new List<Pop>();
         public Form1()
@@ -52,19 +52,13 @@ namespace ServerPicker
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            sdrclient = new SDRClient();
+            firewall.Dispose();
             await NetworkInit();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            foreach (var kv in sdrclient.SDRElements_local.Pops.Where(p => p.Value.Relays != null))
-            {
-                foreach (var item in kv.Value.Relays)
-                {
-                    firewall.UnBlock(item.Ipv4);
-                }
-            }
+            firewall.Dispose();
         }
 
         private void Form1_HelpButtonClicked(object sender, CancelEventArgs e)

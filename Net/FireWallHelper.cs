@@ -26,5 +26,16 @@ namespace ServerPicker.Net
         {
             policy.Rules.Remove("ServerPicker_" + ip);
         }
+
+        public void Dispose()
+        {
+            foreach (var rule in policy.Rules)
+            {
+                if (rule is INetFwRule fwRule && fwRule.Name.StartsWith("ServerPicker_"))
+                {
+                    policy.Rules.Remove(fwRule.Name);
+                }
+            }
+        }
     }
 }
